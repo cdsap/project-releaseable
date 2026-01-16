@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to release (e.g., v0.0.1). Leave empty to use the ref name when running on a tag."
+        required: false
+      notes:
+        description: "Release notes"
+        required: false
+        default: "bugfix release"
+  push:
+    tags:
+      - "v*"
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write  # required for gh release create/upload
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        java: [17]
+    name: Upload Release Asset
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+
+      - name: Build project
+        run: echo "1"
+
+      - name: Resolve tag
+        id: tag
+        shell: bash
+        run: |
+          VERSION="$(tr -d ' \n\r\t' < release/version.txt)"
+          NOTES="$(tr -d ' \n\r\t' < release/change.md)"
+
+          if [[ -z "$VERSION" ]]; then
+            echo "release/version.txt is empty" >&2
+            exit 1
+          fi
+
+          if [[ -z "$NOTES" ]]; then
+            echo "release/change.md is empty" >&2
+            exit 1
+          fi
+
+          RELEASE_NAME="$VERSION"
+          TAG_NAME="v$VERSION"
+
+          echo "release_name=$RELEASE_NAME" >> "$GITHUB_OUTPUT"
+          echo "tag_name=$TAG_NAME" >> "$GITHUB_OUTPUT"
+          echo "notes_path=release/change.md" >> "$GITHUB_OUTPUT"
+
+      - name: Create release (and upload asset)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.rel.outputs.tag_name }}" \
+            --title "${{ steps.rel.outputs.release_name }}" \
+            --notes-file "${{ steps.rel.outputs.notes_path }}"
