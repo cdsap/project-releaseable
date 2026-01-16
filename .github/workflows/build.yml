@@ -58,10 +58,10 @@ jobs:
           echo "tag_name=$TAG_NAME" >> "$GITHUB_OUTPUT"
           echo "notes_path=release/changes.md" >> "$GITHUB_OUTPUT"
 
-      - name: Create release (and upload asset)
+      - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${{ steps.rel.outputs.tag_name }}" \
-            --title "${{ steps.rel.outputs.release_name }}" \
-            --notes-file "${{ steps.rel.outputs.notes_path }}"
+          gh release create "${{ steps.tag.outputs.tag_name }}" \
+            --title "${{ steps.tag.outputs.release_name }}" \
+            --notes-file "${{ steps.tag.outputs.notes_path }}"
