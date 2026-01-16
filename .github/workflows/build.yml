@@ -39,7 +39,7 @@ jobs:
         shell: bash
         run: |
           VERSION="$(tr -d ' \n\r\t' < release/version.txt)"
-          NOTES="$(tr -d ' \n\r\t' < release/change.md)"
+          NOTES="$(tr -d ' \n\r\t' < release/changes.md)"
 
           if [[ -z "$VERSION" ]]; then
             echo "release/version.txt is empty" >&2
@@ -47,7 +47,7 @@ jobs:
           fi
 
           if [[ -z "$NOTES" ]]; then
-            echo "release/change.md is empty" >&2
+            echo "release/changes.md is empty" >&2
             exit 1
           fi
 
@@ -56,7 +56,7 @@ jobs:
 
           echo "release_name=$RELEASE_NAME" >> "$GITHUB_OUTPUT"
           echo "tag_name=$TAG_NAME" >> "$GITHUB_OUTPUT"
-          echo "notes_path=release/change.md" >> "$GITHUB_OUTPUT"
+          echo "notes_path=release/changes.md" >> "$GITHUB_OUTPUT"
 
       - name: Create release (and upload asset)
         env:
