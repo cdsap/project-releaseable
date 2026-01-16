@@ -2,14 +2,6 @@ name: Release
 
 on:
   workflow_dispatch:
-    inputs:
-      tag:
-        description: "Tag to release (e.g., v0.0.1). Leave empty to use the ref name when running on a tag."
-        required: false
-      notes:
-        description: "Release notes"
-        required: false
-        default: "bugfix release"
   push:
     tags:
       - "v*"
