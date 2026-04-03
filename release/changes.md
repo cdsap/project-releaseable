@@ -1,1 +1,1 @@
-* [Fix] Bug fix for test 1
+* Trailing newline test
