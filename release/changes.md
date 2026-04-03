@@ -1,1 +1,1 @@
-* [New Version] Xxxxyyyy
+* [New Version] Testing release 0.0.3
