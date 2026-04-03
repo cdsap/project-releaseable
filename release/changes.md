@@ -1,1 +1,1 @@
-* [New Version] Xxxxyyyy
+* [Fix] Bug fix for test 1
