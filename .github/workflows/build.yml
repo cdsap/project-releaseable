@@ -34,22 +34,11 @@ jobs:
       - name: Build project
         run: echo "1"
 
-      - name: Resolve tag
+      - name: Resolve tag and notes
         id: tag
         shell: bash
         run: |
-          VERSION="$(tr -d ' \n\r\t' < release/version.txt)"
-          NOTES="$(tr -d ' \n\r\t' < release/changes.md)"
-
-          if [[ -z "$VERSION" ]]; then
-            echo "release/version.txt is empty" >&2
-            exit 1
-          fi
-
-          if [[ -z "$NOTES" ]]; then
-            echo "release/changes.md is empty" >&2
-            exit 1
-          fi
+          VERSION="$(cat release/version.txt)"
 
           RELEASE_NAME="$VERSION"
           TAG_NAME="v$VERSION"
