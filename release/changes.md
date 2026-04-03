@@ -1,1 +1,1 @@
-* First release
+* Some notes
